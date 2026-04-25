@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penghitung Buah - OpenCV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .pulse-animation { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        .counter-badge { font-size: 2.5rem; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- <i class="fas fa-apple text-yellow-300 text-2xl"></i> -->
+                <h1 class="text-2xl font-bold">Penghitung Buah</h1>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-gray-100 hover:text-yellow-300 transition font-semibold">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="#about" class="text-gray-100 hover:text-yellow-300 transition font-semibold">
+                    <i class="fas fa-info-circle mr-2"></i>Tentang Kami
+                </a>
+                <a href="#tools" class="text-gray-100 hover:text-yellow-300 transition font-semibold">
+                    <i class="fas fa-tools mr-2"></i>Tools
+                </a>
+                <a href="#contact" class="text-gray-100 hover:text-yellow-300 transition font-semibold">
+                    <i class="fas fa-envelope mr-2"></i>Kontak
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobileMenuBtn" class="md:hidden text-gray-100 hover:text-yellow-300 text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="hidden md:block text-sm text-gray-200">OpenCV + Excel Export</div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-purple-700/80 backdrop-blur-sm">
+            <div class="px-4 py-4 space-y-2">
+                <a href="#home" class="block text-gray-100 hover:text-yellow-300 transition font-semibold py-2">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="#about" class="block text-gray-100 hover:text-yellow-300 transition font-semibold py-2">
+                    <i class="fas fa-info-circle mr-2"></i>Tentang Kami
+                </a>
+                <a href="#tools" class="block text-gray-100 hover:text-yellow-300 transition font-semibold py-2">
+                    <i class="fas fa-tools mr-2"></i>Tools
+                </a>
+                <a href="#contact" class="block text-gray-100 hover:text-yellow-300 transition font-semibold py-2">
+                    <i class="fas fa-envelope mr-2"></i>Kontak
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section bg-gradient-to-b from-purple-900 via-gray-900 to-gray-900 py-20 text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4 animate-pulse">
+                🍎 Penghitung Buah Otomatis
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8">
+                Teknologi AI & Computer Vision untuk menghitung buah secara akurat
+            </p>
+            <div class="flex gap-4 justify-center flex-wrap">
+                <a href="#home" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
+                    <i class="fas fa-rocket mr-2"></i>Mulai Sekarang
+                </a>
+                <a href="#about" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
+                    <i class="fas fa-book mr-2"></i>Pelajari Lebih Lanjut
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOME SECTION -->
+    <section id="home" class="py-16 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">
+                <i class="fas fa-home mr-3 text-purple-400"></i>Aplikasi Penghitung Buah
+            </h2>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- LEFT: Form & Controls -->
+            <div class="lg:col-span-1">
+                <!-- Session Info Card -->
+                <div class="card-shadow bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4 text-purple-400">
+                        <i class="fas fa-cog mr-2"></i>Pengaturan Sesi
+                    </h2>
+
+                    <!-- Nama Klien -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Nama Klien *</label>
+                        <input 
+                            type="text" 
+                            id="clientName"
+                            placeholder="Masukkan nama klien"
+                            class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                        >
+                    </div>
+
+                    <!-- Waktu Penyediaan -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Waktu Penyediaan *</label>
+                        <select 
+                            id="mealTime"
+                            class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                        >
+                            <option value="">-- Pilih Waktu --</option>
+                            <option value="Lunch">🍽️ Lunch</option>
+                            <option value="Dinner">🍽️ Dinner</option>
+                            <option value="Supper">🍽️ Supper</option>
+                        </select>
+                    </div>
+
+                    <!-- Jenis Buah -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Jenis Buah *</label>
+                        <select 
+                            id="fruitType"
+                            class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
+                        >
+                            <option value="">-- Pilih Buah --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sensitivity Control -->
+                <div class="card-shadow bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4 text-purple-400">
+                        <i class="fas fa-sliders-h mr-2"></i>Sensitivitas
+                    </h2>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">
+                            Min Area: <span id="minAreaValue" class="text-purple-400">1500</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            id="minAreaSlider"
+                            min="200" 
+                            max="5000" 
+                            value="1500"
+                            step="100"
+                            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                        >
+                        <div class="flex justify-between text-xs text-gray-400 mt-2">
+                            <span>200</span>
+                            <span>5000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="card-shadow bg-gray-800 rounded-lg p-6 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4 text-purple-400">
+                        <i class="fas fa-camera mr-2"></i>Mode Kerja
+                    </h2>
+                    <div class="space-y-2">
+                        <button 
+                            id="cameraMode"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition"
+                        >
+                            <i class="fas fa-video mr-2"></i>Mode Kamera
+                        </button>
+                        <button 
+                            id="imageMode"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition"
+                        >
+                            <i class="fas fa-image mr-2"></i>Upload Gambar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER & RIGHT: Preview & Results -->
+            <div class="lg:col-span-2">
+                <!-- Image Preview -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 mb-6">
+                    <div class="relative bg-black">
+                        <img 
+                            id="previewImage" 
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23333' width='800' height='600'/%3E%3Ctext x='50%' y='50%' font-size='24' fill='%23999' text-anchor='middle' dy='.3em'%3EPreview Gambar akan muncul di sini%3C/text%3E%3C/svg%3E"
+                            class="w-full h-auto"
+                            alt="Preview"
+                        >
+                        <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-black/50">
+                            <div class="text-center">
+                                <div class="inline-block">
+                                    <i class="fas fa-spinner fa-spin text-4xl text-purple-400 mb-3"></i>
+                                    <p class="text-white mt-2">Processing...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-700">
+                        <input 
+                            type="file" 
+                            id="imageUpload" 
+                            accept="image/*"
+                            class="w-full text-sm text-gray-400 file:mr-2 file:px-3 file:py-2 file:bg-purple-600 file:text-white file:border-0 file:rounded cursor-pointer"
+                        >
+                    </div>
+                </div>
+
+                <!-- Results Card -->
+                <div class="card-shadow bg-gray-800 rounded-lg p-6 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4 text-purple-400">
+                        <i class="fas fa-chart-bar mr-2"></i>Hasil Penghitungan
+                    </h2>
+
+                    <!-- Total Counter -->
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 mb-4 text-center">
+                        <div class="counter-badge text-white" id="totalCount">0</div>
+                        <p class="text-gray-200 text-sm mt-2">Buah Terdeteksi</p>
+                    </div>
+
+                    <!-- Breakdown by Type -->
+                    <div id="resultsBreakdown" class="space-y-2">
+                        <div class="flex justify-between items-center p-3 bg-gray-700 rounded">
+                            <span class="text-gray-400">Belum ada hasil...</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-6 space-y-2">
+                        <button 
+                            id="saveExcelBtn"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            <i class="fas fa-save mr-2"></i>Simpan ke Excel
+                        </button>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button 
+                                id="previewExcelBtn"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded transition text-sm"
+                            >
+                                <i class="fas fa-eye mr-1"></i>Preview
+                            </button>
+                            <button 
+                                id="openExcelBtn"
+                                class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded transition text-sm"
+                            >
+                                <i class="fas fa-folder-open mr-1"></i>Buka
+                            </button>
+                        </div>
+                        
+                        <button 
+                            id="downloadExcelBtn"
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded transition text-sm"
+                        >
+                            <i class="fas fa-download mr-2"></i>Download Excel
+                        </button>
+                        
+                        <button 
+                            id="resetBtn"
+                            class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 rounded transition"
+                        >
+                            <i class="fas fa-redo mr-2"></i>Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-16 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">
+                <i class="fas fa-info-circle mr-3 text-blue-400"></i>Tentang Kami
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- About Text -->
+                <div class="space-y-6">
+                    <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600">
+                        <h3 class="text-2xl font-bold text-blue-400 mb-3">
+                            <i class="fas fa-lightbulb mr-2"></i>Apa itu Penghitung Buah?
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Aplikasi Penghitung Buah adalah solusi inovatif yang menggunakan teknologi Computer Vision dan Artificial Intelligence untuk mendeteksi dan menghitung jumlah buah secara otomatis dan akurat.
+                        </p>
+                    </div>
+
+                    <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600">
+                        <h3 class="text-2xl font-bold text-blue-400 mb-3">
+                            <i class="fas fa-star mr-2"></i>Fitur Utama
+                        </h3>
+                        <ul class="text-gray-300 space-y-2">
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Deteksi real-time dengan mode kamera live</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Upload dan analisis gambar</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Pengaturan sensitivitas dinamis</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Export data ke Excel otomatis</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Database terintegrasi</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="card-shadow bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg p-6 text-center border border-purple-500">
+                            <div class="text-4xl font-bold text-white mb-2">99%</div>
+                            <p class="text-gray-200">Akurasi Deteksi</p>
+                        </div>
+                        <div class="card-shadow bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-6 text-center border border-blue-500">
+                            <div class="text-4xl font-bold text-white mb-2">24/7</div>
+                            <p class="text-gray-200">Tersedia</p>
+                        </div>
+                        <div class="card-shadow bg-gradient-to-br from-green-600 to-green-700 rounded-lg p-6 text-center border border-green-500">
+                            <div class="text-4xl font-bold text-white mb-2">1000+</div>
+                            <p class="text-gray-200">Pengguna</p>
+                        </div>
+                        <div class="card-shadow bg-gradient-to-br from-orange-600 to-orange-700 rounded-lg p-6 text-center border border-orange-500">
+                            <div class="text-4xl font-bold text-white mb-2">5⭐</div>
+                            <p class="text-gray-200">Rating</p>
+                        </div>
+                    </div>
+
+                    <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600">
+                        <h3 class="text-2xl font-bold text-blue-400 mb-3">
+                            <i class="fas fa-graduation-cap mr-2"></i>Teknologi
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">OpenCV</span>
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">Python</span>
+                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">Flask</span>
+                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm">AI/ML</span>
+                            <span class="bg-pink-600 text-white px-3 py-1 rounded-full text-sm">Excel Export</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOLS SECTION -->
+    <section id="tools" class="py-16 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">
+                <i class="fas fa-tools mr-3 text-yellow-400"></i>Tools & Fitur
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tool Card 1 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-center">
+                        <i class="fas fa-video text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Mode Kamera Live</h3>
+                        <p class="text-gray-400 text-sm mb-4">Deteksi buah secara real-time menggunakan webcam dengan hasil instan</p>
+                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Coba Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tool Card 2 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-blue-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-6 text-center">
+                        <i class="fas fa-image text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Upload Gambar</h3>
+                        <p class="text-gray-400 text-sm mb-4">Upload foto buah untuk analisis mendalam dengan AI vision</p>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Upload File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tool Card 3 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-green-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center">
+                        <i class="fas fa-sliders-h text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Pengaturan Sensitivitas</h3>
+                        <p class="text-gray-400 text-sm mb-4">Atur level sensitivitas deteksi sesuai kebutuhan Anda</p>
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Sesuaikan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tool Card 4 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-orange-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-orange-600 to-yellow-600 p-6 text-center">
+                        <i class="fas fa-file-excel text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Export Excel</h3>
+                        <p class="text-gray-400 text-sm mb-4">Simpan hasil penghitungan ke file Excel dengan format rapi</p>
+                        <button class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tool Card 5 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-pink-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-pink-600 to-rose-600 p-6 text-center">
+                        <i class="fas fa-chart-bar text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Analisis Data</h3>
+                        <p class="text-gray-400 text-sm mb-4">Lihat statistik dan analisis detail dari semua hasil deteksi</p>
+                        <button class="w-full bg-pink-600 hover:bg-pink-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Analisis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tool Card 6 -->
+                <div class="card-shadow bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-indigo-500 transition transform hover:scale-105">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-center">
+                        <i class="fas fa-cog text-4xl text-white mb-3"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Pengaturan Sesi</h3>
+                        <p class="text-gray-400 text-sm mb-4">Atur parameter sesi seperti nama klien dan waktu penyediaan</p>
+                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded transition text-sm">
+                            <i class="fas fa-arrow-right mr-2"></i>Konfigurasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-16 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">
+                <i class="fas fa-envelope mr-3 text-green-400"></i>Hubungi Kami
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Contact Info -->
+                <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600 text-center hover:border-green-500 transition">
+                    <i class="fas fa-map-marker-alt text-4xl text-green-400 mb-3"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Lokasi</h3>
+                    <p class="text-gray-300">Jl. Teknologi No. 123<br>Jakarta, Indonesia</p>
+                </div>
+
+                <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600 text-center hover:border-green-500 transition">
+                    <i class="fas fa-phone text-4xl text-green-400 mb-3"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Telepon</h3>
+                    <p class="text-gray-300">+62 812-3456-7890<br>+62 21-9876-5432</p>
+                </div>
+
+                <div class="card-shadow bg-gray-700 rounded-lg p-6 border border-gray-600 text-center hover:border-green-500 transition">
+                    <i class="fas fa-envelope text-4xl text-green-400 mb-3"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Email</h3>
+                    <p class="text-gray-300">info@fruitcounter.com<br>support@fruitcounter.com</p>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="card-shadow bg-gray-700 rounded-lg p-8 border border-gray-600">
+                    <h3 class="text-2xl font-bold text-white mb-6">Kirim Pesan</h3>
+                    <form id="contactForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">Nama Lengkap *</label>
+                            <input 
+                                type="text" 
+                                id="contactName"
+                                placeholder="Masukkan nama Anda"
+                                required
+                                class="w-full bg-gray-600 border border-gray-500 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">Email *</label>
+                            <input 
+                                type="email" 
+                                id="contactEmail"
+                                placeholder="Masukkan email Anda"
+                                required
+                                class="w-full bg-gray-600 border border-gray-500 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">Subjek *</label>
+                            <input 
+                                type="text" 
+                                id="contactSubject"
+                                placeholder="Masukkan subjek pesan"
+                                required
+                                class="w-full bg-gray-600 border border-gray-500 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">Pesan *</label>
+                            <textarea 
+                                id="contactMessage"
+                                placeholder="Tuliskan pesan Anda"
+                                required
+                                rows="5"
+                                class="w-full bg-gray-600 border border-gray-500 rounded px-4 py-2 text-white focus:border-green-500 focus:outline-none transition resize-none"
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition transform hover:scale-105"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>Kirim Pesan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- FAQ -->
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-bold text-white mb-6">FAQ - Pertanyaan Umum</h3>
+                    
+                    <div class="card-shadow bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-green-500 transition cursor-pointer faq-item">
+                        <h4 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-chevron-right text-green-400 mr-2"></i>
+                            Apakah aplikasi ini gratis?
+                        </h4>
+                        <p class="text-gray-300 text-sm hidden faq-content">
+                            Ya, aplikasi ini sepenuhnya gratis untuk digunakan. Anda dapat mengakses semua fitur tanpa biaya tambahan.
+                        </p>
+                    </div>
+
+                    <div class="card-shadow bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-green-500 transition cursor-pointer faq-item">
+                        <h4 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-chevron-right text-green-400 mr-2"></i>
+                            Berapa akurasi deteksi?
+                        </h4>
+                        <p class="text-gray-300 text-sm hidden faq-content">
+                            Aplikasi kami memiliki akurasi hingga 99% dalam mendeteksi dan menghitung buah dengan kondisi pencahayaan yang baik.
+                        </p>
+                    </div>
+
+                    <div class="card-shadow bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-green-500 transition cursor-pointer faq-item">
+                        <h4 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-chevron-right text-green-400 mr-2"></i>
+                            Apakah data saya aman?
+                        </h4>
+                        <p class="text-gray-300 text-sm hidden faq-content">
+                            Data Anda dilindungi dengan enkripsi tingkat enterprise dan disimpan secara aman di server tersertifikasi.
+                        </p>
+                    </div>
+
+                    <div class="card-shadow bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-green-500 transition cursor-pointer faq-item">
+                        <h4 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-chevron-right text-green-400 mr-2"></i>
+                            Bagaimana cara membuat akun?
+                        </h4>
+                        <p class="text-gray-300 text-sm hidden faq-content">
+                            Anda dapat langsung menggunakan aplikasi tanpa perlu membuat akun. Akun hanya diperlukan jika Anda ingin menyimpan data jangka panjang.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-950 border-t border-gray-700 py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Brand -->
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-3 flex items-center">
+                        <!-- <i class="fas fa-apple text-yellow-300 mr-2"></i>-->
+                         Fruit Counter 
+                    </h3>
+                    <p class="text-gray-400 text-sm">Solusi cerdas untuk menghitung buah dengan teknologi AI terdepan.</p>
+                    <div class="flex gap-3 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Navigasi</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#home" class="hover:text-white transition">Home</a></li>
+                        <li><a href="#about" class="hover:text-white transition">Tentang Kami</a></li>
+                        <li><a href="#tools" class="hover:text-white transition">Tools</a></li>
+                        <li><a href="#contact" class="hover:text-white transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Bantuan</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition">Dokumentasi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Tutorial Video</a></li>
+                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                    <p>&copy; 2026 Penghitung Buah. All rights reserved.</p>
+                    <p>Made with <i class="fas fa-heart text-red-500 mx-1"></i> by Fandi ganteng tapi boong</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal: Camera Stream -->
+    <div id="cameraModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="if(event.target.id === 'cameraModal') closeCameraMode()">
+        <div class="bg-gray-800 rounded-lg max-w-2xl w-full card-shadow border border-gray-700 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-6 bg-gradient-to-r from-purple-600 to-pink-600 border-b border-gray-700">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-video mr-2"></i>Mode Kamera Live
+                </h2>
+                <button id="closeCameraModal" class="text-white hover:bg-white/20 p-2 rounded-lg transition text-2xl" title="Tutup (ESC)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="overflow-y-auto flex-1 p-6 space-y-4">
+
+            <div class="relative bg-black rounded-lg overflow-hidden">
+                <img 
+                    id="cameraStream" 
+                    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23000' width='800' height='600'/%3E%3C/svg%3E"
+                    class="w-full h-auto"
+                    alt="Camera Stream"
+                >
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gray-700 rounded p-4 text-center">
+                    <div class="counter-badge text-yellow-400" id="cameraTotal">0</div>
+                    <p class="text-gray-300 text-sm mt-2">Total Buah</p>
+                </div>
+                <div class="bg-gray-700 rounded p-4">
+                    <div id="cameraBreakdown" class="space-y-1 text-sm">
+                        <p class="text-gray-400">Menunggu...</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Footer with Actions -->
+            <div class="border-t border-gray-700 p-6 space-y-2 bg-gray-700">
+                <button 
+                    id="captureScreenshot"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition"
+                >
+                    <i class="fas fa-camera mr-2"></i>Ambil Screenshot
+                </button>
+                <button 
+                    id="stopCameraBtn"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded transition"
+                >
+                    <i class="fas fa-stop-circle mr-2"></i>Tutup & Simpan ke Excel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Excel Data Preview -->
+    <div id="excelModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="if(event.target.id === 'excelModal') closeExcelModal()">
+        <div class="bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto card-shadow border border-gray-700">
+            <div class="sticky top-0 bg-gray-800 flex justify-between items-center p-6 border-b border-gray-700">
+                <h2 class="text-2xl font-bold text-purple-400">
+                    <i class="fas fa-table mr-2"></i>Preview Data Excel
+                </h2>
+                <button id="closeExcelModal" class="text-white hover:bg-gray-700 p-2 rounded-lg transition text-2xl" title="Tutup (ESC)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <!-- File Info -->
+                <div class="bg-gray-700 rounded p-4 mb-6">
+                    <p class="text-sm text-gray-300">
+                        <i class="fas fa-file-excel mr-2 text-green-400"></i>
+                        File: <span id="excelFileName" class="text-white font-bold">hasil_hitung_buah.xlsx</span>
+                        | Total Data: <span id="excelRowCount" class="text-yellow-400 font-bold">0</span> baris
+                    </p>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto bg-gray-700 rounded">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-600 sticky top-0">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">No</th>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">Klien</th>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">Waktu</th>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">Jenis Buah</th>
+                                <th class="px-4 py-3 text-center font-bold text-yellow-400">Jumlah</th>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">Tanggal</th>
+                                <th class="px-4 py-3 text-left font-bold text-yellow-400">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="excelTableBody" class="divide-y divide-gray-600">
+                            <tr>
+                                <td colspan="7" class="px-4 py-8 text-center text-gray-400">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Loading...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="mt-6 grid grid-cols-3 gap-4">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded p-4 text-center">
+                        <p class="text-gray-200 text-sm">Total Baris</p>
+                        <p class="text-3xl font-bold text-white" id="summaryTotal">0</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-600 to-green-700 rounded p-4 text-center">
+                        <p class="text-gray-200 text-sm">Total Buah</p>
+                        <p class="text-3xl font-bold text-white" id="summaryFruit">0</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded p-4 text-center">
+                        <p class="text-gray-200 text-sm">Terakhir Update</p>
+                        <p class="text-xl font-bold text-white" id="summaryDate">-</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <button 
+                        id="refreshExcelBtn"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded transition"
+                    >
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                    <button 
+                        id="downloadFromPreviewBtn"
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded transition"
+                    >
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Success Message -->
+    <div id="successModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div class="bg-green-600 rounded-lg p-8 max-w-sm text-center card-shadow">
+            <i class="fas fa-check-circle text-5xl text-white mb-4"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Berhasil!</h2>
+            <p id="successMessage" class="text-white">Data berhasil disimpan</p>
+            <button 
+                onclick="document.getElementById('successModal').classList.add('hidden')"
+                class="mt-4 bg-white text-green-600 px-6 py-2 rounded font-bold hover:bg-gray-100 transition"
+            >
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Error Message -->
+    <div id="errorModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div class="bg-red-600 rounded-lg p-8 max-w-sm text-center card-shadow">
+            <i class="fas fa-exclamation-circle text-5xl text-white mb-4"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Error!</h2>
+            <p id="errorMessage" class="text-white">Terjadi kesalahan</p>
+            <button 
+                onclick="document.getElementById('errorModal').classList.add('hidden')"
+                class="mt-4 bg-white text-red-600 px-6 py-2 rounded font-bold hover:bg-gray-100 transition"
+            >
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
